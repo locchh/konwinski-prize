@@ -2,8 +2,10 @@
 
 # references
 
-[konwinski-prize](https://www.kaggle.com/competitions/konwinski-prize/overview)
+[kprize](https://kprize.ai/)
 
 [swebench](http://www.swebench.com/)
 
-[kprize](https://kprize.ai/)
+[konwinski-prize](https://www.kaggle.com/competitions/konwinski-prize/overview)
+
+
