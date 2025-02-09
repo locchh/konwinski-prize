@@ -1,0 +1,13 @@
+.vscode
+.DS_Store
+.ipynb_checkpoints
+
+*.tar
+*.zip
+*.rar
+
+tmp
+env
+data
+konwinski-prize
+
