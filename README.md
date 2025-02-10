@@ -15,7 +15,7 @@
 
 ### Step-by-step
 
-❌ Read these notebooks [Konwinski Prize Demo Submission](https://www.kaggle.com/code/sohier/konwinski-prize-demo-submission), [Patch Validation Snippet](https://www.kaggle.com/code/sohier/patch-validation-snippet), etc.
+❌ Read these notebooks [Konwinski Prize Demo Submission](https://www.kaggle.com/code/sohier/konwinski-prize-demo-submission), [Patch Validation Snippet](https://www.kaggle.com/code/sohier/patch-validation-snippet), [KPRIZE - Learn With Me - SWE-Bench and the KPRIZE](https://www.kaggle.com/code/dschettler8845/kprize-learn-with-me-swe-bench-and-the-kprize) etc.
 
 ❌ Hand-on on kaggle environment (Run model, Do some stuff,... )
 
@@ -27,7 +27,12 @@
 ### References
 - [moresearch/swe13b](https://ollama.com/moresearch/swe13b)
 - [ollama/ollama](https://github.com/ollama/ollama)
+
+### Codes
+- [Starter notebook - Select-Patch-Verify](https://www.kaggle.com/code/huikang/starter-notebook-select-patch-verify)
 - [Konwinski Prize - AI GitHub Issue Resolver (TB)](https://www.kaggle.com/code/olaflundstrom/konwinski-prize-ai-github-issue-resolver-tb)
+- [Agent System-Langgraph,Vllm,Elasticsearch,Qwen](https://www.kaggle.com/code/jinssaa/agent-system-langgraph-vllm-elasticsearch-qwen)
+- [[Konwinski Prize] Gemma LLM](https://www.kaggle.com/code/akhiljethwa/konwinski-prize-gemma-llm)
 - [KPrize | Openhands Fork](https://www.kaggle.com/code/smartmanoj/kprize-openhands-fork)
 
 ### Contest
