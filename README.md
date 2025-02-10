@@ -1,16 +1,39 @@
-Here's a more visually appealing version with better formatting:  
-
----
 
 ## Konwinski Prize
+
+### Process
+
+✅ EDA
+
+❌ Analyze GitHub issues
+
+❌ Retrieve relevant code snippets
+
+❌ Suggest patches
+
+❌ Validate fixes using tests
+
+### Step-by-step
+
+❌ Read these notebooks [Konwinski Prize Demo Submission](https://www.kaggle.com/code/sohier/konwinski-prize-demo-submission), [Patch Validation Snippet](https://www.kaggle.com/code/sohier/patch-validation-snippet), etc.
+
+❌ Hand-on on kaggle environment (Run model, Do some stuff,... )
+
+❌ Create full process pipeline
+
+❌ Submit (**Deadline: 20th-Feb**)
+
 
 ### References
 - [moresearch/swe13b](https://ollama.com/moresearch/swe13b)
 - [ollama/ollama](https://github.com/ollama/ollama)
+- [Konwinski Prize - AI GitHub Issue Resolver (TB)](https://www.kaggle.com/code/olaflundstrom/konwinski-prize-ai-github-issue-resolver-tb)
+- [KPrize | Openhands Fork](https://www.kaggle.com/code/smartmanoj/kprize-openhands-fork)
 
 ### Contest
 - [Konwinski Prize Official Website](https://kprize.ai/)  
-- [Kaggle Competition: Konwinski Prize](https://www.kaggle.com/competitions/konwinski-prize/overview)  
+- [Kaggle Competition: Konwinski Prize](https://www.kaggle.com/competitions/konwinski-prize/overview)
+- [Kaggle Competition: Konwinski Prize - Models](https://www.kaggle.com/competitions/konwinski-prize/models)
 
 ### Tools and Benchmarks  
 - [SWE-Agent GitHub Repository](https://github.com/SWE-agent/SWE-agent/tree/main)  
@@ -27,4 +50,4 @@ Here's a more visually appealing version with better formatting:
 ### Cutting-Edge Research Papers  
 - [Toolformer: Language Models Can Teach Themselves to Use Tools](https://arxiv.org/pdf/2302.04761)  
 - [Chameleon: Plug-and-Play Compositional Reasoning with Large Language Models](https://arxiv.org/pdf/2304.09842)  
-- [Gorilla: Large Language Model Connected with Massive APIs](https://arxiv.org/pdf/2305.15334)  
+- [Gorilla: Large Language Model Connected with Massive APIs](https://arxiv.org/pdf/2305.15334)
