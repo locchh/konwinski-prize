@@ -4,7 +4,11 @@ Here's a more visually appealing version with better formatting:
 
 ## Konwinski Prize
 
-### References  
+### References
+- [moresearch/swe13b](https://ollama.com/moresearch/swe13b)
+- [ollama/ollama](https://github.com/ollama/ollama)
+
+### Contest
 - [Konwinski Prize Official Website](https://kprize.ai/)  
 - [Kaggle Competition: Konwinski Prize](https://www.kaggle.com/competitions/konwinski-prize/overview)  
 
