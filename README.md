@@ -5,11 +5,11 @@
 
 ❌ Analyze GitHub issues
 
-❌ Retrieve relevant code snippets
+❌ Retrieve relevant codes
 
-❌ Suggest patches
+❌ Generate patches
 
-❌ Validate fixes using tests
+❌ Validate patches
 
 
 ### Action Plan  
