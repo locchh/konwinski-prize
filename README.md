@@ -3,8 +3,6 @@
 
 ### Process
 
-✅ EDA
-
 ❌ Analyze GitHub issues
 
 ❌ Retrieve relevant code snippets
@@ -13,15 +11,21 @@
 
 ❌ Validate fixes using tests
 
-### Step-by-step
 
-❌ Read these notebooks [Konwinski Prize Demo Submission](https://www.kaggle.com/code/sohier/konwinski-prize-demo-submission), [Patch Validation Snippet](https://www.kaggle.com/code/sohier/patch-validation-snippet), [KPRIZE - Learn With Me - SWE-Bench and the KPRIZE](https://www.kaggle.com/code/dschettler8845/kprize-learn-with-me-swe-bench-and-the-kprize) etc.
+### Action Plan  
 
-❌ Hand-on on kaggle environment (Run model, Do some stuff,... )
+✅ **Review Notebooks**: Explore the following resources:  
+- [Konwinski Prize Demo Submission](https://www.kaggle.com/code/sohier/konwinski-prize-demo-submission)  
+- [Patch Validation Snippet](https://www.kaggle.com/code/sohier/patch-validation-snippet)  
+- [KPRIZE - Learn With Me - SWE-Bench and the KPRIZE](https://www.kaggle.com/code/dschettler8845/kprize-learn-with-me-swe-bench-and-the-kprize)  
 
-❌ Create full process pipeline
+✅ **Hands-on Practice in Kaggle**: Run models, experiment with the environment, and explore different functionalities.  
 
-❌ Submit (**Deadline: 20th-Feb**)
+❌ **Local Notebook Approach**: Using training data and GPT for solving problems locally first.  
+
+❌ **Full Pipeline Development**: Build the complete process pipeline directly in Kaggle.
+
+❌ **Final Submission**: Finalize and submit the solution (**Deadline: February 20**).
 
 
 ### References
