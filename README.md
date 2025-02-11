@@ -3,7 +3,7 @@
 
 ### Process
 
-❌ Analyze GitHub issues
+❌ Analyze repo issues
 
 ❌ Retrieve relevant codes
 
@@ -21,11 +21,13 @@
 
 ✅ **Hands-on Practice in Kaggle**: Run models, experiment with the environment, and explore different functionalities.  
 
-❌ **Local Notebook Approach**: Using training data and GPT for solving problems locally first.  
+❌ **Local Notebook Approach**: Using training data and GPT for solving problems locally first.
+
+❌ **Check Submitted Code**: Check other competitors' submitted code.
 
 ❌ **Full Pipeline Development**: Build the complete process pipeline directly in Kaggle.
 
-❌ **Final Submission**: Finalize and submit the solution (**Deadline: February 20**).
+❌ **Final Submission**: Finalize and submit the solution (**Deadline: February 25**).
 
 
 ### References
