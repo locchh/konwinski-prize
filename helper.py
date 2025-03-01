@@ -13,6 +13,62 @@ from typing import Iterable, Optional, Literal, Any, List, Dict, Union, Tuple, G
 
 ## Tools
 
+def generate_tree_string(folder_path: str, prefix: str = "") -> str:
+    """Generate a string representation of a directory tree structure.
+    
+    This function recursively traverses a directory and creates an ASCII tree visualization
+    similar to the Unix 'tree' command. It uses box-drawing characters to show the 
+    hierarchy of files and directories.
+    
+    Args:
+        folder_path (str): Path to the directory to visualize
+        prefix (str, optional): Prefix string used for recursive indentation. 
+                              Should not be set by user - used internally for recursion.
+                              Defaults to "".
+    
+    Returns:
+        str: A formatted string showing the directory tree structure using ASCII characters:
+            ├── for items that have siblings below them
+            └── for the last item in a directory
+            │   for vertical lines showing hierarchy
+    
+    Example:
+        >>> print(generate_tree_string("/path/to/dir"))
+        ├── file1.txt
+        ├── subdirectory
+        │   ├── subfile1.txt
+        │   └── subfile2.txt
+        └── file2.txt
+    """
+    tree_string = ""
+    try:
+        # Get and sort directory contents, excluding hidden files
+        entries = sorted(os.listdir(folder_path))
+        entries = [e for e in entries if not e.startswith(".")]  # Ignore hidden files
+        
+        # Process each entry in the directory
+        for i, entry in enumerate(entries):
+            path = os.path.join(folder_path, entry)
+            
+            # Choose the appropriate connector based on whether this is the last entry
+            # ├── for items with more siblings, └── for the last item
+            connector = "├── " if i < len(entries) - 1 else "└── "
+            tree_string += f"{prefix}{connector}{entry}\n"
+            
+            # Recursively process subdirectories
+            if os.path.isdir(path):
+                # Create new prefix for subdirectory contents:
+                # │    for continuing levels (more siblings exist)
+                # └    for the last item in this level
+                new_prefix = prefix + ("│   " if i < len(entries) - 1 else "    ")
+                tree_string += generate_tree_string(path, new_prefix)
+    except PermissionError:
+        # Handle cases where we can't access the directory contents
+        tree_string += f"{prefix}└── [Permission Denied]\n"
+    
+    return tree_string
+
+
 def get_directory_tree(
         directory: pathlib.Path,
         tree: Optional[Tree] = None,
