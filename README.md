@@ -1,5 +1,6 @@
+## kprize
 
-## Konwinski Prize
+Konwinski Contest
 
 ### Overview
 
