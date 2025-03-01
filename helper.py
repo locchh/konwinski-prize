@@ -5,6 +5,10 @@ import tiktoken
 from openai import OpenAI
 from typing import List, Dict, Optional, Any, Callable
 
+## Tools
+
+## Utils
+
 def generate_function_schema(func: Callable) -> dict:
     """
     Generate an OpenAI function calling JSON schema from a given function.
