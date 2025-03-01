@@ -1,6 +1,7 @@
 .vscode
 .DS_Store
 .ipynb_checkpoints
+__pycache__
 
 *.tar
 *.zip
@@ -10,4 +11,3 @@ tmp
 env
 data
 konwinski-prize
-
