@@ -4,42 +4,42 @@ import json
 import inspect
 import pathlib
 import tiktoken
-from rich.filesize import decimal
-from rich.markup import escape
+from openai import OpenAI
 from rich.text import Text
 from rich.tree import Tree
-from openai import OpenAI
-from typing import Iterable, Optional, Literal, Any, List, Dict, Union, Tuple, Generator, Callable
+from rich.markup import escape
+from rich.filesize import decimal
+from typing import Iterable, Optional, List, Dict, Union, Tuple, Callable
 
 ## Tools
 
+
 def generate_tree_string(folder_path: str, prefix: str = "") -> str:
-    """Generate a string representation of a directory tree structure.
-    
-    This function recursively traverses a directory and creates an ASCII tree visualization
-    similar to the Unix 'tree' command. It uses box-drawing characters to show the 
-    hierarchy of files and directories.
-    
+
+    """Generate an ASCII tree of a directory structure.
+
+    This function recursively traverses a directory to create a visual hierarchy 
+    similar to the Unix 'tree' command, using box-drawing characters.
+
     Args:
-        folder_path (str): Path to the directory to visualize
-        prefix (str, optional): Prefix string used for recursive indentation. 
-                              Should not be set by user - used internally for recursion.
-                              Defaults to "".
-    
+        folder_path (str): Directory path to visualize.
+        prefix (str, optional): Internal prefix for recursion (not user-set). Defaults to "".
+
     Returns:
-        str: A formatted string showing the directory tree structure using ASCII characters:
-            ├── for items that have siblings below them
-            └── for the last item in a directory
-            │   for vertical lines showing hierarchy
-    
+        str: ASCII tree with:
+            ├── for non-final items
+            └── for the last item
+            │   for vertical hierarchy lines
+
     Example:
         >>> print(generate_tree_string("/path/to/dir"))
         ├── file1.txt
-        ├── subdirectory
+        ├── subdir
         │   ├── subfile1.txt
         │   └── subfile2.txt
         └── file2.txt
     """
+        
     tree_string = ""
     try:
         # Get and sort directory contents, excluding hidden files
@@ -201,39 +201,29 @@ def get_directory_tree(
 def get_lines_from_file(file_path: str,
                         line_range: Optional[str],
                         as_list: bool = False) -> str:
-    """Returns the lines of code from a specified file and line range.
+    """Retrieve lines of code from a file within a given range.
 
     Args:
-        file_path (str):
-            The path to the file from which to retrieve lines.
-        line_range (str, optional):
-            A string representing the range of lines in the format "start-end".
-            For example, "10-20" means lines 10 through 20, inclusive (1-based indexing).
-            When not provided all lines are returned.
-        as_list (bool, optional):
-            Keep the lines separate.
+        file_path (str): Path to the file.
+        line_range (str, optional): Line range in "start-end" format (1-based). 
+            Example: "10-20" retrieves lines 10 to 20. Defaults to all lines.
+        as_list (bool, optional): If True, returns lines as a list.
 
     Returns:
-        str:
-            A concatenated string of lines from the specified range. If the file
-            is not found or if the line range is invalid, returns an error message string.
-    
-    Example:
-        code = get_lines_from_file(file_path = os.path.join("astropy/_dev/scm_version.py"),
-                                           line_range="1-20")
-    
-    Output:
-        # Try to use setuptools_scm to get the current version; this is only used
-        # in development installations from the git repository.
-        import os.path as pth
+        str: Concatenated lines from the range or an error message if the file 
+            is not found or the range is invalid.
 
+    Example:
+        code = get_lines_from_file("astropy/_dev/scm_version.py", line_range="1-20")
+
+    Output:
+        # Try to use setuptools_scm...
+        import os.path as pth
         try:
             from setuptools_scm import get_version
-
-            version = get_version(root=pth.join("..", ".."), relative_to=__file__)
-        except Exception:
-            raise ImportError("setuptools_scm broken or not installed")
-
+            version = get_version(root="..", relative_to=__file__)
+        except:
+            raise ImportError("setuptools_scm broken or missing")
     """
     if not os.path.isfile(file_path):
         return f"[Error] File not found: {file_path}"
@@ -548,28 +538,23 @@ def get_object_definition(
     object_name: str,
     return_imports: bool = False
     ) -> Optional[Dict[str, Union[str, int, List[str]]]]:
-    """Searches the codebase for the first definition of a function, class, or method matching object_name.
+    """Finds the first definition of a function, class, or method in the codebase.
 
-    If object_name is a method referenced with dot notation (e.g. "Cat._meow"),
-    then we find class 'Cat', extract the relevant portion of its definition block,
-    and include the method definition plus any __init__.
+    If object_name is a method using dot notation (e.g., "Cat._meow"), the function locates class 'Cat',
+    extracts its definition block, and includes the method plus any __init__.
 
     Args:
-        root_directory (str):
-            The path to the root directory of the codebase.
-        object_name (str):
-            The name of the function or class to find (e.g., "my_function", "MyClass", or "Cat._meow").
-        return_imports (bool, optional):
-            Whether to collect import statements found in the file.
+        root_directory (str): Root directory of the codebase.
+        object_name (str): Function/class name (e.g., "my_function", "MyClass", "Cat._meow").
+        return_imports (bool, optional): Whether to collect import statements.
 
     Returns:
-        Optional[Dict[str, Union[str, int, List[str]]]]: 
-            A dictionary describing the object definition, or None if not found.
-                - file (str): Path to the file containing the definition.
-                - line (int): The 1-based line number where the definition appears.
-                - content (str): The exact line that matched (the def/class line).
-                - definition_block (list[str]): The extracted lines of the definition.
-                - imports (list[str], optional): The file’s import statements, if return_imports=True.
+        Optional[Dict[str, Union[str, int, List[str]]]]]: Object definition details or None.
+            - file (str): File path.
+            - line (int): 1-based line number.
+            - content (str): Matching def/class line.
+            - definition_block (list[str]): Extracted definition lines.
+            - imports (list[str], optional): Imports if return_imports=True.
     """
     class_name, method_name = _parse_class_and_method(object_name)
 
@@ -665,42 +650,52 @@ def get_object_definition(
 
 ## Utils
 
-def generate_function_schema(func: Callable) -> dict:
-    """
-    Generate an OpenAI function calling JSON schema from a given function.
-    """
-    signature = inspect.signature(func)
-    parameters = {}
-    
-    for name, param in signature.parameters.items():
-        param_type = param.annotation if param.annotation != inspect.Parameter.empty else Any
-        
-        # Map Python types to JSON schema types
-        json_type = "string"  # Default type
-        if param_type in [int, "int"]:
-            json_type = "integer"
-        elif param_type in [float, "float"]:
-            json_type = "number"
-        elif param_type in [bool, "bool"]:
-            json_type = "boolean"
-        elif param_type in [list, "list"]:
-            json_type = "array"
-        elif param_type in [dict, "dict"]:
-            json_type = "object"
-        
-        parameters[name] = {"type": json_type}
-        
-    schema = {
-        "name": func.__name__,
-        "description": func.__doc__ or "No description provided.",
-        "parameters": {
-            "type": "object",
-            "properties": parameters,
-            "required": [name for name, param in signature.parameters.items() if param.default == inspect.Parameter.empty]
-        }
+def function_to_schema(func: Callable) -> dict:
+    type_map = {
+        str: "string",
+        int: "integer",
+        float: "number",
+        bool: "boolean",
+        list: "array",
+        dict: "object",
+        type(None): "null",
     }
-    
-    return schema #json.dumps(schema, indent=2)
+
+    try:
+        signature = inspect.signature(func)
+    except ValueError as e:
+        raise ValueError(
+            f"Failed to get signature for function {func.__name__}: {str(e)}"
+        )
+
+    parameters = {}
+    for param in signature.parameters.values():
+        try:
+            param_type = type_map.get(param.annotation, "string")
+        except KeyError as e:
+            raise KeyError(
+                f"Unknown type annotation {param.annotation} for parameter {param.name}: {str(e)}"
+            )
+        parameters[param.name] = {"type": param_type}
+
+    required = [
+        param.name
+        for param in signature.parameters.values()
+        if param.default == inspect._empty
+    ]
+
+    return {
+        "type": "function",
+        "function": {
+            "name": func.__name__,
+            "description": (func.__doc__ or "").strip(),
+            "parameters": {
+                "type": "object",
+                "properties": parameters,
+                "required": required,
+            },
+        },
+    }
 
 
 def print_pretty(json_data):
@@ -713,30 +708,36 @@ def print_pretty(json_data):
     print(json.dumps(json_data, indent=4, sort_keys=True))
 
 
-def count_tiktoken_length(messages: List[Dict[str, str]], model_name: str = "gpt-3.5-turbo") -> int:
+def count_tiktoken_length(messages: Union[str, List[Dict[str, str]]], model_name: str = "gpt-3.5-turbo") -> int:
     """
-    Counts the total number of tokens in a list of messages using tiktoken.
+    Counts the total number of tokens in a list of messages or a single string using tiktoken.
 
     Args:
-        messages (List[Dict[str, str]]): List of messages, where each message is a dictionary
-                                         with keys like "role" and "content".
-        model_name (str): The name of the model for which the tokenization should be done.
-                          Default is "gpt-3.5-turbo".
+        messages (Union[str, List[Dict[str, str]]]): Either a single string or a list of messages,
+                                                     where each message is a dictionary with keys like "role" and "content".
+        model_name (str): The model name for tokenization. Default is "gpt-3.5-turbo".
 
     Returns:
-        int: Total number of tokens across all messages.
+        int: Total number of tokens.
     """
     try:
-        # Load the tokenizer for the specified model
         encoding = tiktoken.encoding_for_model(model_name)
-        
         total_tokens = 0
-        
+
+        # Handle the case where messages is a string
+        if isinstance(messages, str):
+            return len(encoding.encode(messages))
+
+        # Validate messages is a list of dicts
+        if not isinstance(messages, list) or not all(isinstance(msg, dict) for msg in messages):
+            raise ValueError("messages must be a list of dictionaries or a single string.")
+
+        # Count tokens for each message
         for message in messages:
             for key, value in message.items():
-                # Count tokens for each value in the message dictionary
-                total_tokens += len(encoding.encode(value))
-        
+                if isinstance(value, str):  # Ensure value is a string before encoding
+                    total_tokens += len(encoding.encode(value))
+
         return total_tokens
     except Exception as e:
         raise RuntimeError(f"Error in calculating token length: {e}")
