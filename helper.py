@@ -15,7 +15,6 @@ from typing import Iterable, Optional, List, Dict, Union, Tuple, Callable
 
 ## Tools
 
-
 def generate_tree_string(folder_path: str, prefix: str = "") -> str:
 
     """Generate an ASCII tree of a directory structure.
