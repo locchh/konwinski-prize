@@ -26,6 +26,10 @@ Konwinski Contest
 
 **Keytakeaway**:
 
+- Agent avoid hallucination by geting action's feedback from environment.
+
+- `gpt-4o` seems to use more tools to clarify tasks compared to `gpt-4`, `gpt-4o-mini`, and others.
+
 
 ### References
 

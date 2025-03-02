@@ -659,6 +659,20 @@ def get_object_definition(
         return f"An error occurred: {e}"
 
 
+def get_correct_root_path():
+    """
+    Returns the absolute path to the project's root directory.
+    This ensures consistent path resolution across the codebase.
+    
+    Returns:
+        str: Absolute path to the project root directory
+    """
+    # Get the directory containing the current file (helper.py)
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    # The current directory is the root directory since helper.py is in the root
+    return current_dir
+
+
 def generate_patches(answer: str) -> str:
     """
     Generate patches based on the provided answer if the model has already understood the problem.
