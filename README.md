@@ -24,9 +24,11 @@ Konwinski Contest
 ❌ **Final Submission**: Finalize and submit the solution (**Deadline: March 2**).
 
 
-**Keytakeaway**:
+**Key takeaway**:
 
 - Agent avoid hallucination by geting action's feedback from environment.
+
+- Multi-turn agents solve complex tasks more effectively than single-turn agents.
 
 - `gpt-4o` seems to use more tools to clarify tasks compared to `gpt-4`, `gpt-4o-mini`, and others.
 
