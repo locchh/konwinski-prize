@@ -1,4 +1,8 @@
-This plan outlines how to build a software agent that can check out a repository, analyze issues, and automatically apply fixes.  
+This plan describes how to build a software agent that checks out a repository, analyzes issues, and automatically applies fixes.
+
+First, we ask the model to define the necessary tools based on the issue type. Next, we build these tools and instruct the model to use them to generate patches. If the defined tools are insufficient, we prompt the model to suggest alternatives or additional tools.
+
+We manually run this process step by step (cell by cell) until the model successfully generates patches. This approach ensures that the model can produce effective patches while allowing us to refine the tools or enhance the system prompt by providing more metadata about the repository.
 
 ---
 
