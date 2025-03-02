@@ -1,9 +1,11 @@
 import os
 import re
+import time
 import json
 import inspect
 import pathlib
 import tiktoken
+import openai
 from openai import OpenAI
 from rich.text import Text
 from rich.tree import Tree
@@ -42,6 +44,10 @@ def generate_tree_string(folder_path: str, prefix: str = "") -> str:
         
     tree_string = ""
     try:
+        # Check if directory exists first
+        if not os.path.exists(folder_path):
+            return f"{prefix}[Error: Directory '{folder_path}' does not exist]\n"
+            
         # Get and sort directory contents, excluding hidden files
         entries = sorted(os.listdir(folder_path))
         entries = [e for e in entries if not e.startswith(".")]  # Ignore hidden files
@@ -324,7 +330,7 @@ def search_code(
     n_lines_before: int = 0,
     n_lines_after: int = 0,
     return_imports: bool = False
-    ) -> List[Dict[str, Union[str, int, List[str]]]]:
+    ) -> Union[List[Dict[str, Union[str, int, List[str]]]], str]:
     """Searches for a given string in all .py files under root_directory.
     
     Optionally returning surrounding lines (context) and import statements from matching files.
@@ -337,48 +343,51 @@ def search_code(
         return_imports (bool, optional): Whether to return import statements. Defaults to False.
 
     Returns:
-        List[Dict[str, Union[str, int, List[str]]]]: List of match dictionaries.
+        Union[List[Dict[str, Union[str, int, List[str]]]], str]: List of match dictionaries or an error message.
     """
-    matches: List[Dict[str, Union[str, int, List[str]]]] = []
-    pattern = re.compile(rf"\b{re.escape(search_string)}\b")  # Ensure exact word match
+    try:
+        matches: List[Dict[str, Union[str, int, List[str]]]] = []
+        pattern = re.compile(rf"\b{re.escape(search_string)}\b")  # Ensure exact word match
 
-    for dirpath, _, filenames in os.walk(root_directory):
-        for filename in filenames:
-            if filename.endswith('.py'):
-                full_path = os.path.join(dirpath, filename)
+        for dirpath, _, filenames in os.walk(root_directory):
+            for filename in filenames:
+                if filename.endswith('.py'):
+                    full_path = os.path.join(dirpath, filename)
 
-                # Safe file reading
-                try:
-                    with open(full_path, 'r', encoding='utf-8') as f:
-                        lines = f.readlines()
-                except (UnicodeDecodeError, FileNotFoundError) as e:
-                    print(f"Skipping file {full_path} due to error: {e}")
-                    continue
+                    # Safe file reading
+                    try:
+                        with open(full_path, 'r', encoding='utf-8') as f:
+                            lines = f.readlines()
+                    except (UnicodeDecodeError, FileNotFoundError) as e:
+                        print(f"Skipping file {full_path} due to error: {e}")
+                        continue
 
-                file_imports = _collect_imports_from_lines(lines) if return_imports else []
+                    file_imports = _collect_imports_from_lines(lines) if return_imports else []
 
-                for i, line in enumerate(lines, start=1):
-                    if pattern.search(line):  # Exact match instead of substring
-                        start_idx = max(0, i - 1 - n_lines_before)
-                        end_idx = min(len(lines), i - 1 + n_lines_after + 1)
+                    for i, line in enumerate(lines, start=1):
+                        if pattern.search(line):  # Exact match instead of substring
+                            start_idx = max(0, i - 1 - n_lines_before)
+                            end_idx = min(len(lines), i - 1 + n_lines_after + 1)
 
-                        context_before = [l.rstrip('\n') for l in lines[start_idx:i - 1]] if start_idx < i - 1 else []
-                        context_after = [l.rstrip('\n') for l in lines[i:end_idx]] if i < end_idx else []
+                            context_before = [l.rstrip('\n') for l in lines[start_idx:i - 1]] if start_idx < i - 1 else []
+                            context_after = [l.rstrip('\n') for l in lines[i:end_idx]] if i < end_idx else []
 
-                        match_entry = {
-                            'file': full_path,
-                            'line': i,
-                            'content': line.rstrip('\n'),
-                            'context_before': context_before,
-                            'context_after': context_after
-                        }
+                            match_entry = {
+                                'file': full_path,
+                                'line': i,
+                                'content': line.rstrip('\n'),
+                                'context_before': context_before,
+                                'context_after': context_after
+                            }
 
-                        if return_imports:
-                            match_entry['imports'] = file_imports
+                            if return_imports:
+                                match_entry['imports'] = file_imports
 
-                        matches.append(match_entry)
+                            matches.append(match_entry)
 
-    return matches
+        return matches
+    except Exception as e:
+        return f"An error occurred: {e}"
 
 
 def _get_indent_level(line: str) -> int:
@@ -556,101 +565,104 @@ def get_object_definition(
             - definition_block (list[str]): Extracted definition lines.
             - imports (list[str], optional): Imports if return_imports=True.
     """
-    class_name, method_name = _parse_class_and_method(object_name)
+    try:
+        class_name, method_name = _parse_class_and_method(object_name)
 
-    # If we have a separate class_name, we'll do a 2-phase search:
-    #   - Phase A: find the class definition for class_name
-    #   - Phase B: from that block, locate method_name
-    if class_name:
-        # We only search for 'class class_name'
-        class_pattern = re.compile(rf'^\s*class\s+{re.escape(class_name)}\b')
+        # If we have a separate class_name, we'll do a 2-phase search:
+        #   - Phase A: find the class definition for class_name
+        #   - Phase B: from that block, locate method_name
+        if class_name:
+            # We only search for 'class class_name'
+            class_pattern = re.compile(rf'^\s*class\s+{re.escape(class_name)}\b')
 
-        for dirpath, _, filenames in os.walk(root_directory):
-            for filename in filenames:
-                if filename.endswith('.py'):
-                    full_path = os.path.join(dirpath, filename)
-                    with open(full_path, 'r', encoding='utf-8') as f:
-                        lines = f.readlines()
-                    file_imports = _collect_imports_from_lines(lines) if return_imports else []
+            for dirpath, _, filenames in os.walk(root_directory):
+                for filename in filenames:
+                    if filename.endswith('.py'):
+                        full_path = os.path.join(dirpath, filename)
+                        with open(full_path, 'r', encoding='utf-8') as f:
+                            lines = f.readlines()
+                        file_imports = _collect_imports_from_lines(lines) if return_imports else []
 
-                    for i, line in enumerate(lines, start=1):
-                        if class_pattern.search(line.strip()):
-                            # Found the class
-                            class_definition_block = _extract_entire_definition(lines, i - 1)
-                            # Now see if we can find the method inside
-                            bounds = _find_method_block_in_lines(class_definition_block, method_name)
+                        for i, line in enumerate(lines, start=1):
+                            if class_pattern.search(line.strip()):
+                                # Found the class
+                                class_definition_block = _extract_entire_definition(lines, i - 1)
+                                # Now see if we can find the method inside
+                                bounds = _find_method_block_in_lines(class_definition_block, method_name)
 
-                            if bounds is None:
-                                continue
+                                if bounds is None:
+                                    continue
 
-                            init_bounds = _find_method_block_in_lines(class_definition_block, '__init__')
-                            furthest_line = max(bounds[1], init_bounds[1] if init_bounds else 0)
-                            final_block = class_definition_block[: furthest_line + 1]
+                                init_bounds = _find_method_block_in_lines(class_definition_block, '__init__')
+                                furthest_line = max(bounds[1], init_bounds[1] if init_bounds else 0)
+                                final_block = class_definition_block[: furthest_line + 1]
 
-                            result = {
-                                'file': full_path,
-                                'line': i,
-                                'content': line.rstrip('\n'),
-                                'definition_block': [l.rstrip('\n') for l in final_block],
-                            }
-                            if return_imports:
-                                result['imports'] = file_imports
-                            return result
-        return None
+                                result = {
+                                    'file': full_path,
+                                    'line': i,
+                                    'content': line.rstrip('\n'),
+                                    'definition_block': [l.rstrip('\n') for l in final_block],
+                                }
+                                if return_imports:
+                                    result['imports'] = file_imports
+                                return result
+            return None
 
-    else:
-        # class_name is None -> (handle "def object_name" or "class object_name")
-        pattern = re.compile(rf'^\s*(?:def|class)\s+{re.escape(method_name)}\b')
+        else:
+            # class_name is None -> (handle "def object_name" or "class object_name")
+            pattern = re.compile(rf'^\s*(?:def|class)\s+{re.escape(method_name)}\b')
 
-        for dirpath, _, filenames in os.walk(root_directory):
-            for filename in filenames:
-                if filename.endswith('.py'):
-                    full_path = os.path.join(dirpath, filename)
+            for dirpath, _, filenames in os.walk(root_directory):
+                for filename in filenames:
+                    if filename.endswith('.py'):
+                        full_path = os.path.join(dirpath, filename)
 
-                    with open(full_path, 'r', encoding='utf-8') as f:
-                        lines = f.readlines()
+                        with open(full_path, 'r', encoding='utf-8') as f:
+                            lines = f.readlines()
 
-                    file_imports = _collect_imports_from_lines(lines) if return_imports else []
+                        file_imports = _collect_imports_from_lines(lines) if return_imports else []
 
-                    for i, line in enumerate(lines, start=1):
-                        if pattern.search(line.strip()):
-                            stripped = line.strip()
-                            if stripped.startswith(f'class {method_name}'):
-                                definition_block = _extract_entire_definition(lines, i - 1)
-                            else:
-                                def_indent = _get_indent_level(line)
-                                class_line_idx = None
-                                for rev_idx in range(i - 2, -1, -1):
-                                    if lines[rev_idx].lstrip().startswith('class '):
-                                        class_indent = _get_indent_level(lines[rev_idx])
-                                        if class_indent < def_indent:
-                                            class_line_idx = rev_idx
-                                            break
-
-                                if class_line_idx is None:
+                        for i, line in enumerate(lines, start=1):
+                            if pattern.search(line.strip()):
+                                stripped = line.strip()
+                                if stripped.startswith(f'class {method_name}'):
                                     definition_block = _extract_entire_definition(lines, i - 1)
                                 else:
-                                    definition_block = _extract_class_up_to_init_or_method(
-                                        lines, class_line_idx, method_name
-                                    )
+                                    def_indent = _get_indent_level(line)
+                                    class_line_idx = None
+                                    for rev_idx in range(i - 2, -1, -1):
+                                        if lines[rev_idx].lstrip().startswith('class '):
+                                            class_indent = _get_indent_level(lines[rev_idx])
+                                            if class_indent < def_indent:
+                                                class_line_idx = rev_idx
+                                                break
 
-                            result = {
-                                'file': full_path,
-                                'line': i,
-                                'content': line.rstrip('\n'),
-                                'definition_block': [l.rstrip('\n') for l in definition_block],
-                            }
-                            if return_imports:
-                                result['imports'] = file_imports
+                                    if class_line_idx is None:
+                                        definition_block = _extract_entire_definition(lines, i - 1)
+                                    else:
+                                        definition_block = _extract_class_up_to_init_or_method(
+                                            lines, class_line_idx, method_name
+                                        )
 
-                            return result
+                                result = {
+                                    'file': full_path,
+                                    'line': i,
+                                    'content': line.rstrip('\n'),
+                                    'definition_block': [l.rstrip('\n') for l in definition_block],
+                                }
+                                if return_imports:
+                                    result['imports'] = file_imports
 
-        return None
+                                return result
+
+            return None
+    except Exception as e:
+        return f"An error occurred: {e}"
+
 
 def generate_patches(answer: str) -> str:
     """
-    Generate patches based on the provided answer if the model has already 
-    understood the problem and determined a fix.
+    Generate patches based on the provided answer if the model has already understood the problem.
 
     Args:
         answer (str): 
@@ -709,6 +721,7 @@ def function_to_schema(func: Callable) -> dict:
                 "type": "object",
                 "properties": parameters,
                 "required": required,
+                "additionalProperties": False,  # Ensures no extra properties are allowed
             },
         },
     }
@@ -825,3 +838,17 @@ def create_openai_client() -> Optional[OpenAI]:
     except Exception as e:
         print(f"Failed to create OpenAI client: {e}")
         return None
+
+
+def safe_completion(client, model_name, messages, tool_schemas, retries=3):
+    for _ in range(retries):
+        try:
+            return client.chat.completions.create(
+                model=model_name,
+                messages=messages,
+                tools=tool_schemas
+            )
+        except openai.RateLimitError:
+            print("Rate limit exceeded. Waiting before retrying...")
+            time.sleep(60)  # Wait 60 seconds
+    raise Exception("Exceeded retry attempts due to rate limit.")
