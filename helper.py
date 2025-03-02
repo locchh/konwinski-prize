@@ -647,6 +647,22 @@ def get_object_definition(
 
         return None
 
+def generate_patches(answer: str) -> str:
+    """
+    Generate patches based on the provided answer if the model has already 
+    understood the problem and determined a fix.
+
+    Args:
+        answer (str): 
+            The model's response containing the solution.
+
+    Returns:
+        str: 
+            A status message indicating that the repository issue has been resolved 
+            and execution should stop.
+    """
+    return "The repo issue solved!, We stop the execution here."
+
 
 ## Utils
 

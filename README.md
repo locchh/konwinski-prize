@@ -24,6 +24,9 @@ Konwinski Contest
 ❌ **Final Submission**: Finalize and submit the solution (**Deadline: March 2**).
 
 
+**Keytakeaway**:
+
+
 ### References
 
 - [Fixit](https://fixit.readthedocs.io/en/stable/)
