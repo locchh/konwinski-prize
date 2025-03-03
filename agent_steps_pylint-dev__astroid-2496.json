@@ -1,0 +1,190 @@
+[
+  {
+    "id": "chatcmpl-B6yhJjj9qm2oOCsiFWcoI4oSlIgLs",
+    "choices": [
+      {
+        "finish_reason": "tool_calls",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": null,
+          "refusal": null,
+          "role": "assistant",
+          "audio": null,
+          "function_call": null,
+          "tool_calls": [
+            {
+              "id": "call_ViNCfqYiuJLnTAmAf92IWnWz",
+              "function": {
+                "arguments": "{\"root_directory\":\".\",\"search_string\":\"TypeError: unsupported format string passed to NoneType.__format__\",\"n_lines_before\":3,\"n_lines_after\":3}",
+                "name": "search_code"
+              },
+              "type": "function"
+            }
+          ]
+        }
+      }
+    ],
+    "created": 1741002989,
+    "model": "gpt-3.5-turbo-0125",
+    "object": "chat.completion",
+    "service_tier": "default",
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 43,
+      "prompt_tokens": 1300,
+      "total_tokens": 1343,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cached_tokens": 0
+      }
+    }
+  },
+  {
+    "id": "chatcmpl-B6yhNILwg3SZ8nxEMiUl9Mlfk3jN4",
+    "choices": [
+      {
+        "finish_reason": "tool_calls",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": null,
+          "refusal": null,
+          "role": "assistant",
+          "audio": null,
+          "function_call": null,
+          "tool_calls": [
+            {
+              "id": "call_xkHnYT8w3rCnBi8MWeazIOZp",
+              "function": {
+                "arguments": "{\"root_directory\":\".\",\"object_name\":\"A\",\"return_imports\":true}",
+                "name": "get_object_definition"
+              },
+              "type": "function"
+            }
+          ]
+        }
+      }
+    ],
+    "created": 1741002993,
+    "model": "gpt-3.5-turbo-0125",
+    "object": "chat.completion",
+    "service_tier": "default",
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 27,
+      "prompt_tokens": 1351,
+      "total_tokens": 1378,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cached_tokens": 0
+      }
+    }
+  },
+  {
+    "id": "chatcmpl-B6yhOluan9gbA6iRVK5LXbc67PEhM",
+    "choices": [
+      {
+        "finish_reason": "tool_calls",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": null,
+          "refusal": null,
+          "role": "assistant",
+          "audio": null,
+          "function_call": null,
+          "tool_calls": [
+            {
+              "id": "call_NlL08kfbj3qnEdWmNG5qxSwJ",
+              "function": {
+                "arguments": "{\"file_path\":\"./konwinski-prize/data/repos/repo__astropy__astropy-17048/astropy/utils/tests/test_decorators.py\",\"line_range\":\"179-200\",\"as_list\":true}",
+                "name": "get_lines_from_file"
+              },
+              "type": "function"
+            }
+          ]
+        }
+      }
+    ],
+    "created": 1741002994,
+    "model": "gpt-3.5-turbo-0125",
+    "object": "chat.completion",
+    "service_tier": "default",
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 57,
+      "prompt_tokens": 1566,
+      "total_tokens": 1623,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cached_tokens": 0
+      }
+    }
+  },
+  {
+    "id": "chatcmpl-B6yhPJkgKZ3fyq2gVfjQxnvuIvyeH",
+    "choices": [
+      {
+        "finish_reason": "tool_calls",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": null,
+          "refusal": null,
+          "role": "assistant",
+          "audio": null,
+          "function_call": null,
+          "tool_calls": [
+            {
+              "id": "call_9OB66ykQobNH3qpe78KAUPCY",
+              "function": {
+                "arguments": "{\"answer\":\"In file 'test_decorators.py' at line 179, change 'class A:' to 'class A:'\\n\\n    def __init__(self):\\n        self._magnitude = None\\n\\n    def name(self) -> str | None:\\n        if self._magnitude:\\n            return f\\\"M {self._magnitude:.1f}\\\"\\n\"}",
+                "name": "generate_patches"
+              },
+              "type": "function"
+            }
+          ]
+        }
+      }
+    ],
+    "created": 1741002995,
+    "model": "gpt-3.5-turbo-0125",
+    "object": "chat.completion",
+    "service_tier": "default",
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 89,
+      "prompt_tokens": 1846,
+      "total_tokens": 1935,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cached_tokens": 0
+      }
+    }
+  }
+]
