@@ -1,0 +1,104 @@
+{
+    "repo_name": "astroid",
+    "repo_path": "pylint-dev/astroid",
+    "github_url": "https://github.com/pylint-dev/astroid",
+    "log_parser": "parse_log_pytest",
+    "specs": {
+        "2.10": {
+            "python": "3.9",
+            "test_cmd": "pytest -rA",
+            "install": "python -m pip install -e .",
+            "pip_packages": [
+                "pytest"
+            ]
+        },
+        "2.12": {
+            "python": "3.9",
+            "test_cmd": "pytest -rA",
+            "install": "python -m pip install -e .",
+            "pip_packages": [
+                "pytest"
+            ]
+        },
+        "2.13": {
+            "python": "3.9",
+            "test_cmd": "pytest -rA",
+            "install": "python -m pip install -e .",
+            "pip_packages": [
+                "pytest"
+            ]
+        },
+        "2.14": {
+            "python": "3.9",
+            "test_cmd": "pytest -rA",
+            "install": "python -m pip install -e .",
+            "pip_packages": [
+                "pytest"
+            ]
+        },
+        "2.15": {
+            "python": "3.9",
+            "test_cmd": "pytest -rA",
+            "install": "python -m pip install -e .",
+            "pip_packages": [
+                "pytest"
+            ]
+        },
+        "2.16": {
+            "python": "3.9",
+            "test_cmd": "pytest -rA",
+            "install": "python -m pip install -e .",
+            "pip_packages": [
+                "pytest"
+            ]
+        },
+        "2.5": {
+            "python": "3.9",
+            "test_cmd": "pytest -rA",
+            "install": "python -m pip install -e .",
+            "pip_packages": [
+                "pytest"
+            ]
+        },
+        "2.6": {
+            "python": "3.9",
+            "test_cmd": "pytest -rA",
+            "install": "python -m pip install -e .",
+            "pip_packages": [
+                "pytest"
+            ]
+        },
+        "2.7": {
+            "python": "3.9",
+            "test_cmd": "pytest -rA",
+            "install": "python -m pip install -e .",
+            "pip_packages": [
+                "pytest"
+            ]
+        },
+        "2.8": {
+            "python": "3.9",
+            "test_cmd": "pytest -rA",
+            "install": "python -m pip install -e .",
+            "pip_packages": [
+                "pytest"
+            ]
+        },
+        "2.9": {
+            "python": "3.9",
+            "test_cmd": "pytest -rA",
+            "install": "python -m pip install -e .",
+            "pip_packages": [
+                "pytest"
+            ]
+        },
+        "3.0": {
+            "python": "3.11",
+            "test_cmd": "pytest -rA",
+            "install": "python -m pip install -e .",
+            "pip_packages": [
+                "pytest"
+            ]
+        }
+    }
+}
