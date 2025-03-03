@@ -17,7 +17,7 @@ Konwinski Contest
 
 ✅ **Hands-on Practice in Kaggle**: Run models, experiment with the environment, and explore different functionalities.  
 
-❌ **Local Notebook Approach**: Using training data and GPT for solving problems locally first.
+✅ **Local Notebook Approach**: Using training data and GPT for solving problems locally first.
 
 ❌ **Check Submitted Code**: Check other competitors' submitted code.
 
