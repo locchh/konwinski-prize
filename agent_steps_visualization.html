@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agent Steps Visualization</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            line-height: 1.6;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .completion-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .completion-header {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+        .tool-call {
+            background: #f8f9fa;
+            border-left: 4px solid #007bff;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 0 4px 4px 0;
+        }
+        .json-args {
+            background: #272822;
+            color: #f8f8f2;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+        .usage-info {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+        .collapsible {
+            background: #007bff;
+            color: white;
+            cursor: pointer;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            text-align: left;
+            outline: none;
+            margin: 5px 0;
+        }
+        .content {
+            display: none;
+            overflow: hidden;
+        }
+        .active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <h1>Agent Steps Visualization</h1>
+    <div id="completions"></div>
+
+    <script>
+        const data = [
+  {
+    "id": "chatcmpl-B7010UQvRP4ynrAEKbE4Knvklm1zL",
+    "choices": [
+      {
+        "finish_reason": "tool_calls",
+        "index": 0,
+        "message": {
+          "tool_calls": [
+            {
+              "id": "call_UHnxuaWLQy95KU73ykJ3I800",
+              "function": {
+                "arguments": {"root_directory": "konwinski-prize/data/repos/repo__astropy__astropy-16898", "search_string": "def read", "n_lines_before": 5, "n_lines_after": 5, "return_imports": false},
+                "name": "search_code"
+              }
+            },
+            {
+              "id": "call_7WfZVs88niQGs4lW5jiiIXUc",
+              "function": {
+                "arguments": {"root_directory": "konwinski-prize/data/repos/repo__astropy__astropy-16898", "search_string": "def writeto", "n_lines_before": 5, "n_lines_after": 5, "return_imports": false},
+                "name": "search_code"
+              }
+            },
+            {
+              "id": "call_J78M6qalaBL0JZiYBQskSOnW",
+              "function": {
+                "arguments": {"root_directory": "konwinski-prize/data/repos/repo__astropy__astropy-16898", "search_string": "class Table", "n_lines_before": 5, "n_lines_after": 5, "return_imports": false},
+                "name": "search_code"
+              }
+            },
+            {
+              "id": "call_hU1c1DBrXIFXKYXdal3zQ05Q",
+              "function": {
+                "arguments": {"root_directory": "konwinski-prize/data/repos/repo__astropy__astropy-16898", "search_string": "class QTable", "n_lines_before": 5, "n_lines_after": 5, "return_imports": false},
+                "name": "search_code"
+              }
+            }
+          ]
+        }
+      }
+    ],
+    "created": 1741008054,
+    "usage": {
+      "completion_tokens": 243,
+      "prompt_tokens": 1775,
+      "total_tokens": 2018
+    }
+  },
+  {
+    "id": "chatcmpl-B7018Vey60KtpPLNRBkcPa0krI5Wk",
+    "choices": [
+      {
+        "finish_reason": "tool_calls",
+        "index": 0,
+        "message": {
+          "tool_calls": [
+            {
+              "id": "call_3A7ld4ePL6vkQmeOjg6rS19Y",
+              "function": {
+                "arguments": {"object_name":"Table","root_directory":"konwinski-prize/data/repos/repo__astropy__astropy-16898","return_imports":true},
+                "name": "get_object_definition"
+              }
+            }
+          ]
+        }
+      }
+    ],
+    "created": 1741008062,
+    "usage": {
+      "completion_tokens": 45,
+      "prompt_tokens": 6539,
+      "total_tokens": 6584
+    }
+  },
+  {
+    "id": "chatcmpl-B701AEBIgUXBNp80I9oFwVbfekQjy",
+    "choices": [
+      {
+        "finish_reason": "tool_calls",
+        "index": 0,
+        "message": {
+          "tool_calls": [
+            {
+              "id": "call_Cj2BG3UiSGN8tnhp4FGQ8XoQ",
+              "function": {
+                "arguments": {"object_name":"QTable","root_directory":"konwinski-prize/data/repos/repo__astropy__astropy-16898","return_imports":true},
+                "name": "get_object_definition"
+              }
+            }
+          ]
+        }
+      }
+    ],
+    "created": 1741008064,
+    "usage": {
+      "completion_tokens": 46,
+      "prompt_tokens": 6788,
+      "total_tokens": 6834
+    }
+  },
+  {
+    "id": "chatcmpl-B701CQxNDSHwKPmGSTpLSg89LfwjF",
+    "choices": [
+      {
+        "finish_reason": "tool_calls",
+        "index": 0,
+        "message": {
+          "tool_calls": [
+            {
+              "id": "call_E9jdAtq8Fp7XfqwAJwK4s5AM",
+              "function": {
+                "arguments": {"object_name":"TableFormatter._pformat_col","root_directory":"konwinski-prize/data/repos/repo__astropy__astropy-16898","return_imports":false},
+                "name": "get_object_definition"
+              }
+            }
+          ]
+        }
+      }
+    ],
+    "created": 1741008066,
+    "usage": {
+      "completion_tokens": 50,
+      "prompt_tokens": 7832,
+      "total_tokens": 7882
+    }
+  },
+  {
+    "id": "chatcmpl-B701FBw4dTssfdzHzu7BVqACRUSGP",
+    "choices": [
+      {
+        "finish_reason": "tool_calls",
+        "index": 0,
+        "message": {
+          "tool_calls": [
+            {
+              "id": "call_chXmKEhrmAtxoOEEPcz5kiWG",
+              "function": {
+                "arguments": {"object_name":"dtype_info_name","root_directory":"konwinski-prize/data/repos/repo__astropy__astropy-16898","return_imports":true},
+                "name": "get_object_definition"
+              }
+            }
+          ]
+        }
+      }
+    ],
+    "created": 1741008069,
+    "usage": {
+      "completion_tokens": 47,
+      "prompt_tokens": 9731,
+      "total_tokens": 9778
+    }
+  },
+  {
+    "id": "chatcmpl-B701Tek2RyEfHUwEUCRJu0h5tG0UC",
+    "choices": [
+      {
+        "finish_reason": "tool_calls",
+        "index": 0,
+        "message": {
+          "content": "The issue arises because the display functionality tries to handle a zero-sized string column, which leads to an unexpected error during formatting and representation. This results in problems when attempting to display or process these zero-sized strings columns, as observed in the `TableFormatter._pformat_col` method. To solve this issue, I will implement a check in the `_pformat_col` method of the `TableFormatter` class to handle zero-sized string columns accurately and modify how these cases are managed during the formatting process.\n\nHere are the proposed changes:\n\n1. **Modify `TableFormatter._pformat_col` method**:\n   - Introduce a check for zero-sized string columns in `_pformat_col` to handle them correctly.\n   - Implement logic to avoid unnecessary calls that could lead to errors due to unexpected data types or sizes.\n\nLet's make these changes in `astropy/table/pprint.py`.",
+          "tool_calls": [
+            {
+              "id": "call_VArhP7orENXKMOiQTiOj4p7k",
+              "function": {
+                "arguments": {"file_path":"konwinski-prize/data/repos/repo__astropy__astropy-16898/astropy/table/pprint.py","line_range":"170-250"},
+                "name": "get_lines_from_file"
+              }
+            }
+          ]
+        }
+      }
+    ],
+    "created": 1741008083,
+    "usage": {
+      "completion_tokens": 229,
+      "prompt_tokens": 10394,
+      "total_tokens": 10623
+    }
+  }
+];
+
+        function formatDate(timestamp) {
+            return new Date(timestamp * 1000).toLocaleString();
+        }
+
+        function formatJSON(obj) {
+            return JSON.stringify(obj, null, 2);
+        }
+
+        function createCompletionCard(completion) {
+            const card = document.createElement('div');
+            card.className = 'completion-card';
+
+            const header = document.createElement('div');
+            header.className = 'completion-header';
+            header.innerHTML = `
+                <div>
+                    <strong>ID:</strong> ${completion.id}<br>
+                    <strong>Created:</strong> ${formatDate(completion.created)}
+                </div>
+            `;
+            card.appendChild(header);
+
+            const choice = completion.choices[0];
+            if (choice.message.content) {
+                const content = document.createElement('div');
+                content.innerHTML = `<strong>Content:</strong><br>${choice.message.content}`;
+                card.appendChild(content);
+            }
+
+            if (choice.message.tool_calls) {
+                const toolCallsContainer = document.createElement('div');
+                toolCallsContainer.innerHTML = '<strong>Tool Calls:</strong>';
+                
+                choice.message.tool_calls.forEach(toolCall => {
+                    const toolCallDiv = document.createElement('div');
+                    toolCallDiv.className = 'tool-call';
+                    toolCallDiv.innerHTML = `
+                        <strong>Function:</strong> ${toolCall.function.name}<br>
+                        <strong>ID:</strong> ${toolCall.id}<br>
+                        <strong>Arguments:</strong><br>
+                        <div class="json-args">${formatJSON(toolCall.function.arguments)}</div>
+                    `;
+                    toolCallsContainer.appendChild(toolCallDiv);
+                });
+                card.appendChild(toolCallsContainer);
+            }
+
+            const usage = document.createElement('div');
+            usage.className = 'usage-info';
+            usage.innerHTML = `
+                <strong>Usage:</strong><br>
+                Completion Tokens: ${completion.usage.completion_tokens}<br>
+                Prompt Tokens: ${completion.usage.prompt_tokens}<br>
+                Total Tokens: ${completion.usage.total_tokens}
+            `;
+            card.appendChild(usage);
+
+            return card;
+        }
+
+        const completionsContainer = document.getElementById('completions');
+        data.forEach(completion => {
+            completionsContainer.appendChild(createCompletionCard(completion));
+        });
+
+        // Add collapsible functionality
+        document.querySelectorAll('.collapsible').forEach(button => {
+            button.addEventListener('click', function() {
+                this.classList.toggle('active');
+                const content = this.nextElementSibling;
+                if (content.style.display === 'block') {
+                    content.style.display = 'none';
+                } else {
+                    content.style.display = 'block';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

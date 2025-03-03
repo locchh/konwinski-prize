@@ -29,7 +29,7 @@ comp_repo_configs_dir = os.path.join(comp_data_dir, "repo_configs")
 comp_repos_dir = os.path.join(comp_data_dir, "repos")
 
 # Create client
-model_name = "gpt-3.5-turbo"
+model_name = "gpt-4o" # "gpt-3.5-turbo", "gpt-4"
 set_openai_key()
 test_openai_api()
 client = create_openai_client()

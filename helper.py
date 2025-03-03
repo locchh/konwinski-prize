@@ -413,7 +413,7 @@ def _extract_entire_definition(lines: List[str], start_index: int) -> List[str]:
         lines (list[str]):
             The lines containing the entirety of the class definition.
         start_index (int):
-            Where we will start checking from looking for the relevant information.
+            The starting point of the class (indexable) for the definition within the lines.
 
     Returns:
         A list of strings representing the lines for a given definition block (function/class/method)
@@ -659,20 +659,124 @@ def get_object_definition(
         return f"An error occurred: {e}"
 
 
+def create_patch_content(original_file: str, modified_content: str, file_path: str) -> str:
+    """
+    Create a git-format patch from original and modified content.
+    
+    Args:
+        original_file (str): Path to the original file
+        modified_content (str): New content after changes
+        file_path (str): Path to the file relative to repo root
+        
+    Returns:
+        str: Git format patch content
+    """
+    import difflib
+    from datetime import datetime
+    
+    with open(original_file) as f:
+        original_lines = f.readlines()
+    modified_lines = modified_content.splitlines(keepends=True)
+    
+    # Generate unified diff
+    diff = difflib.unified_diff(
+        original_lines,
+        modified_lines,
+        fromfile=f'a/{file_path}',
+        tofile=f'b/{file_path}',
+        lineterm=''
+    )
+    
+    # Format as git patch
+    timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    patch = [
+        f'From: AI Assistant <ai@example.com>',
+        f'Date: {timestamp}',
+        f'Subject: [PATCH] Auto-generated patch for {file_path}',
+        '',
+        '---'
+    ]
+    patch.extend(diff)
+    return '\n'.join(patch)
+
+
+def validate_patch(patch_content: str) -> bool:
+    """
+    Validate if a patch can be applied cleanly.
+    
+    Args:
+        patch_content (str): The patch content to validate
+        
+    Returns:
+        bool: True if patch is valid and can be applied
+    """
+    import tempfile
+    import subprocess
+    
+    with tempfile.NamedTemporaryFile(mode='w', suffix='.patch') as tmp:
+        tmp.write(patch_content)
+        tmp.flush()
+        
+        try:
+            # Try to apply patch with --check (dry run)
+            result = subprocess.run(
+                ['git', 'apply', '--check', tmp.name],
+                capture_output=True,
+                text=True
+            )
+            return result.returncode == 0
+        except Exception:
+            return False
+
+
 def generate_patches(answer: str) -> str:
     """
-    Generate patches based on the provided answer if the model has already understood the problem.
-
+    Generate git format patches based on the model's solution.
+    
     Args:
-        answer (str): 
-            The model's response containing the solution.
-
+        answer (str): The model's response containing the solution
+        
     Returns:
-        str: 
-            A status message indicating that the repository issue has been resolved 
-            and execution should stop.
+        str: Status message and path to generated patch file
     """
-    return "The repo issue solved!, We stop the execution here."
+    import re
+    import os
+    from pathlib import Path
+    
+    # Extract code blocks and file paths using regex
+    code_blocks = re.finditer(
+        r'```(?:python)?\n(.*?)\n```\s*(?:File:\s*([^\n]+))?', 
+        answer, 
+        re.DOTALL
+    )
+    
+    patches = []
+    for match in code_blocks:
+        code = match.group(1).strip()
+        file_path = match.group(2)
+        
+        if not file_path or not os.path.exists(file_path):
+            continue
+            
+        # Generate patch
+        patch_content = create_patch_content(file_path, code, file_path)
+        
+        # Validate patch
+        if validate_patch(patch_content):
+            patches.append(patch_content)
+            
+    if not patches:
+        return "No valid patches could be generated from the solution"
+        
+    # Write patches to file
+    patches_dir = Path('patches')
+    patches_dir.mkdir(exist_ok=True)
+    
+    patch_file = patches_dir / f'solution_{int(time.time())}.patch'
+    with open(patch_file, 'w') as f:
+        f.write('\n'.join(patches))
+        
+    return f"Generated patch file: {patch_file}"
 
 
 ## Utils
